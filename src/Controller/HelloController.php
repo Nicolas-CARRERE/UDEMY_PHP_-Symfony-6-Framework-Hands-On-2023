@@ -26,7 +26,7 @@ class HelloController extends AbstractController
       );
   }
 
-  #[Route('/messages/{id}', name: 'app_show_one', requirements: ['id' => '\d+'])]
+  #[Route('/messages/{id<\d+>}', name: 'app_show_one', requirements: ['id' => '\d+'])]
   public function showOne(int $id): Response
   {
     return $this->render(
