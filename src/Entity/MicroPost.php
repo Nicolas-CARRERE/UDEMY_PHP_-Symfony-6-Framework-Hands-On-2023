@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Assert\NotBlank;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MicroPostRepository;
@@ -16,7 +17,7 @@ class MicroPost
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
+    #[NotBlank()]
     #[Assert\Length(min: 5, max: 255, minMessage: 'Title is to short, 5 characters minimum.')]
     private ?string $title = null;
 
