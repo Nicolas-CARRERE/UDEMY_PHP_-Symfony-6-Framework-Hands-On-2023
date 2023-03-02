@@ -29,7 +29,7 @@ class MicroPostController extends AbstractController
     public function showOne(MicroPost $post): Response
     {
         // dd($post);
-        return $this-> render('micro_post/show.html.twig', [
+        return $this->render('micro_post/show.html.twig', [
             'post' => $post
         ]);
     }
@@ -41,7 +41,7 @@ class MicroPostController extends AbstractController
         $form = $this->createForm(MicroPostType::class, new MicroPost());
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
             // dd($post);
             $post->setCreated(new DateTime());
@@ -59,7 +59,7 @@ class MicroPostController extends AbstractController
             [
                 'form' => $form
             ]
-            );
+        );
     }
 
     #[Route('/micro-post/{post}/edit', name: 'app_micro_post_edit')]
@@ -68,7 +68,7 @@ class MicroPostController extends AbstractController
         $form = $this->createForm(MicroPostType::class, $post);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
             $posts->save($post, true);
 
@@ -82,9 +82,10 @@ class MicroPostController extends AbstractController
         return $this->renderForm(
             'micro_post/edit.html.twig',
             [
-                'form' => $form
+                'form' => $form,
+                'post' => $post
             ]
-            );
+        );
     }
 
     #[Route('/micro-post/{post}/comment', name: 'app_micro_post_comment')]
@@ -93,7 +94,7 @@ class MicroPostController extends AbstractController
         $form = $this->createForm(CommentType::class, new Comment());
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
             $comment->setPost($post);
             $comments->save($comment, true);
@@ -114,7 +115,6 @@ class MicroPostController extends AbstractController
                 'form' => $form,
                 'post' => $post
             ]
-            );
+        );
     }
-
 }
