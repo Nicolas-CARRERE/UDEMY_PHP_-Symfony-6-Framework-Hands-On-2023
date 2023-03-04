@@ -35,8 +35,10 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/add', name: 'app_micro_post_add', priority: 2)]
-    public function add(Request $request, MicroPostRepository $posts): Response
-    {
+    public function add(
+        Request $request,
+        MicroPostRepository $posts
+    ): Response {
         $microPost = new MicroPost();
         $form = $this->createForm(MicroPostType::class, new MicroPost());
         $form->handleRequest($request);
@@ -45,6 +47,7 @@ class MicroPostController extends AbstractController
             $post = $form->getData();
             // dd($post);
             $post->setCreated(new DateTime());
+            $post->setAuthor($this->getUser());
             $posts->save($post, true);
 
             // Add a flash message
@@ -97,6 +100,7 @@ class MicroPostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
             $comment->setPost($post);
+            $comment->setAuthor($this->getUser());
             $comments->save($comment, true);
 
             // Add a flash message
