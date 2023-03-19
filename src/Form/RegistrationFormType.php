@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Entity\UserProfile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -54,7 +55,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-        ;
+            ->add('userProfile', UserProfileType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
