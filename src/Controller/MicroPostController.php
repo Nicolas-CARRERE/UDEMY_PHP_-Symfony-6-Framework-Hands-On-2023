@@ -36,11 +36,20 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/follows', name: 'app_micro_post_follows')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function follows(MicroPostRepository $posts): Response
     {
-        return $this->render('micro_post/follows.html.twig', [
-            'posts' => $posts->findAllWithComments(),
-        ]);
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        return $this->render(
+            'micro_post/follows.html.twig', 
+            [
+                'posts' => $posts->findAllByAuthors(
+                    $currentUser->getFollows()
+                ),
+            ]
+        );
     }
 
     #[Route('/micro-post/{post}', name: 'app_micro_post_show')]
