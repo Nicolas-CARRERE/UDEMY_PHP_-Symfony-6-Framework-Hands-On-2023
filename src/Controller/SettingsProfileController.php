@@ -4,16 +4,16 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\UserProfile;
-use App\Form\ProfileImageType;
 use App\Form\UserProfileType;
+use App\Form\ProfileImageType;
 use App\Repository\UserRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class SettingsProfileController extends AbstractController
 {
@@ -21,28 +21,27 @@ class SettingsProfileController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function profile(
         Request $request,
-        UserRepository $users,
-    ): Response
-    {
+        UserRepository $users
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
         $userProfile = $user->getUserProfile() ?? new UserProfile();
-        
+
         $form = $this->createForm(
             UserProfileType::class,
             $userProfile
         );
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $userProfile = $form->getData();
             $user->setUserProfile($userProfile);
-            $users->save($user, true);
+            $users->add($user, true);
             $this->addFlash(
                 'success',
-                'Your user profile settings were saved.',
+                'Your user profile settings were saved.'
             );
-            
+
             return $this->redirectToRoute(
                 'app_settings_profile'
             );
@@ -58,17 +57,16 @@ class SettingsProfileController extends AbstractController
 
     #[Route('/settings/profile-image', name: 'app_settings_profile_image')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function profileImage (
+    public function profileImage(
         Request $request,
         SluggerInterface $slugger,
         UserRepository $users
-    ): Response 
-    {
+    ): Response {
         $form = $this->createForm(ProfileImageType::class);
         /** @var User $user */
         $user = $this->getUser();
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $profileImageFile = $form->get('profileImage')->getData();
 
@@ -90,19 +88,19 @@ class SettingsProfileController extends AbstractController
 
                 $profile = $user->getUserProfile() ?? new UserProfile();
                 $profile->setImage($newFileName);
+                $user->setUserProfile($profile);
                 $users->save($user, true);
                 $this->addFlash('success', 'Your profile image was updated.');
 
                 return $this->redirectToRoute('app_settings_profile_image');
             }
-            
         }
-        
+
         return $this->render(
             'settings_profile/profile_image.html.twig',
             [
                 'form' => $form->createView(),
             ]
-            );
+        );
     }
 }
