@@ -23,7 +23,7 @@ class MicroPost
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[NotBlank()]
+    #[Assert\NotBlank()]
     #[Assert\Length(min: 5, max: 255, minMessage: 'Title is to short, 5 characters minimum.')]
     private ?string $title = null;
 
@@ -45,11 +45,15 @@ class MicroPost
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $extraPrivacy;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->likedBy = new ArrayCollection();
         $this->created = new DateTime;
+        $this->extraPrivacy = false;
     }
 
     public function getId(): ?int
@@ -155,6 +159,18 @@ class MicroPost
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function isExtraPrivacy(): ?bool
+    {
+        return $this->extraPrivacy;
+    }
+
+    public function setExtraPrivacy(bool $extraPrivacy): self
+    {
+        $this->extraPrivacy = $extraPrivacy;
 
         return $this;
     }
